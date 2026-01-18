@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DOUPY Tattoo Artist</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    body {
+      height: 100vh;
+      background: url('background.jpg') no-repeat center center/cover;
+      overflow-x: hidden;
+      color: white;
+    }
+
+    .overlay {
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 20px;
+      animation: fadeIn 2s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    h1 {
+      font-size: 3.5rem;
+      margin-bottom: 15px;
+      text-shadow: 0 0 20px #00aaff;
+      animation: glow 3s infinite alternate;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 15px #0066cc; }
+      to { text-shadow: 0 0 35px #33ccff; }
+    }
+
+    p.subtitle {
+      font-size: 1.3rem;
+      opacity: 0.9;
+      margin-bottom: 35px;
+      animation: fadeIn 3s ease;
+    }
+
+    .button {
+      padding: 15px 35px;
+      font-size: 1.3rem;
+      background: linear-gradient(90deg, #0088ff, #33ccff);
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      color: white;
+      box-shadow: 0 0 20px #00aaff;
+      transition: 0.4s ease;
+      animation: buttonPop 2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .button::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, #33ccff, #66e0ff);
+      transition: 0.4s ease;
+    }
+
+    .button:hover::after {
+      left: 0;
+    }
+
+    @keyframes buttonPop {
+      0% { transform: scale(0); }
+      100% { transform: scale(1); }
+    }
+
+    .button:hover {
+      transform: scale(1.15);
+      box-shadow: 0 0 35px #33ccff;
+    }
+
+    .gallery-section {
+      margin-top: 80px;
+      padding: 40px 20px;
+      background: rgba(0, 0, 0, 0.7);
+      border-radius: 20px;
+      animation: fadeUp 1.5s ease;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(50px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .gallery {
+      margin-top: 30px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: center;
+    }
+
+    .gallery img {
+      width: 240px;
+      height: 240px;
+      object-fit: cover;
+      border-radius: 12px;
+      transition: 0.3s ease;
+      box-shadow: 0 0 12px black;
+      opacity: 0;
+      animation: imageFade 1s ease forwards;
+      cursor: pointer;
+    }
+
+    .gallery img:hover {
+      transform: scale(1.15);
+      box-shadow: 0 0 25px #00aaff;
+    }
+    
+
+    @keyframes imageFade {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    footer {
+      margin-top: 60px;
+      text-align: center;
+      font-size: 1rem;
+      opacity: 0.85;
+      padding-bottom: 20px;
+    }
+
+    footer a {
+      color: #00aaff;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    @media (max-width: 768px) {
+      h1 { font-size: 2.5rem; }
+      p.subtitle { font-size: 1.1rem; }
+      .button { font-size: 1rem; padding: 12px 25px; }
+      .gallery img { width: 150px; height: 150px; }
+    }
+  .btn-text { position: relative; z-index: 2; }
+.button::after { z-index: 1; }
+.lightbox {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.9);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      animation: fadeIn 0.3s ease;
+      touch-action: pan-y; /* dovolí scroll nahoru/dolů, ale ne horizontální "gesta" prohlížeče */
+    }
+
+    .lightbox img {
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 15px;
+      box-shadow: 0 0 40px #00aaff;
+    }
+
+
+    /* --- Lightbox UI --- */
+    .lb-inner {
+      position: relative;
+      max-width: 92vw;
+      max-height: 92vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .lb-img {
+      max-width: 92vw;
+      max-height: 82vh;
+      border-radius: 15px;
+      box-shadow: 0 0 40px #00aaff;
+      transform: scale(0.98);
+      opacity: 0;
+      transition: opacity 200ms ease, transform 200ms ease;
+    }
+
+    .lb-img.is-active {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .lb-close {
+      position: absolute;
+      top: 16px;
+      right: 18px;
+      width: 46px;
+      height: 46px;
+      border: 0;
+      border-radius: 999px;
+      background: rgba(0,0,0,0.5);
+      color: #fff;
+      font-size: 22px;
+      cursor: pointer;
+      z-index: 10000;
+      display: grid;
+      place-items: center;
+      box-shadow: 0 0 18px rgba(0,170,255,0.35);
+      transition: transform 180ms ease, background 180ms ease;
+    }
+
+    .lb-close:hover { transform: scale(1.08); background: rgba(0,0,0,0.65); }
+
+    .lb-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 54px;
+      height: 54px;
+      border: 0;
+      border-radius: 999px;
+      background: rgba(0,0,0,0.45);
+      color: #fff;
+      font-size: 26px;
+      cursor: pointer;
+      z-index: 10000;
+      display: grid;
+      place-items: center;
+      box-shadow: 0 0 18px rgba(0,170,255,0.25);
+      transition: transform 180ms ease, background 180ms ease;
+      user-select: none;
+    }
+
+    .lb-arrow:hover { transform: translateY(-50%) scale(1.08); background: rgba(0,0,0,0.6); }
+    .lb-prev { left: 14px; }
+    .lb-next { right: 14px; }
+
+    .lb-counter {
+      position: absolute;
+      top: -46px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(0,0,0,0.5);
+      font-size: 0.95rem;
+      letter-spacing: 0.5px;
+      box-shadow: 0 0 18px rgba(0,170,255,0.2);
+      white-space: nowrap;
+    }
+
+    @media (max-width: 768px) {
+      .lb-arrow { width: 48px; height: 48px; font-size: 22px; }
+      .lb-close { width: 44px; height: 44px; font-size: 20px; }
+      .lb-counter { top: -40px; font-size: 0.9rem; }
+    }
+
+    .gallery-close {
+      position:absolute;
+      top:12px;
+      right:16px;
+      font-size:2rem;
+      cursor:pointer;
+      color:white;
+      z-index:10;
+      transition:0.2s ease;
+    }
+    .gallery-close:hover { transform: scale(1.15); color:#33ccff; }
+</style>
+</head>
+<body>
+  <div class="overlay">
+    <h1>DOUPY Tattoo Artist</h1>
+    <p class="subtitle">Precizní práce • Originální designy • Profesionální péče</p>
+    <button class="button" onclick="showGallery()"><span class="btn-text">Zobrazit ukázky</span></button>
+
+    <div id="gallerySection" class="gallery-section" style="display:none; position: relative;">
+      <div class="gallery-close" onclick="closeGallery()">✖</div>
+      <h2>Ukázky Tvorby</h2>
+      <div class="gallery">
+        <!-- 15 obrázků - doplníš své -->
+        <img src="sample1.jpg" alt="Tattoo">
+        <img src="sample2.jpg" alt="Tattoo">
+        <img src="sample3.jpg" alt="Tattoo">
+        <img src="sample4.jpg" alt="Tattoo">
+        <img src="sample5.jpg" alt="Tattoo">
+        <img src="sample6.jpg" alt="Tattoo">
+        <img src="sample7.jpg" alt="Tattoo">
+        <img src="sample8.jpg" alt="Tattoo">
+        <img src="sample9.jpg" alt="Tattoo">
+        <img src="sample10.jpg" alt="Tattoo">
+        <img src="sample11.jpg" alt="Tattoo">
+        <img src="sample12.jpg" alt="Tattoo">
+        <img src="sample13.jpg" alt="Tattoo">
+        <img src="sample14.jpg" alt="Tattoo">
+        <img src="sample15.jpg" alt="Tattoo">
+        <img src="sample16.jpg" alt="Tattoo">
+        <img src="sample17.jpg" alt="Tattoo">
+        <img src="sample18.jpg" alt="Tattoo">
+        <img src="sample19.jpg" alt="Tattoo">
+        <img src="sample20.jpg" alt="Tattoo">
+      </div>
+    </div>
+
+    <footer>
+      © 2026 DOUPY Tattoo Artist<br>
+      <div style="display:flex; gap:18px; justify-content:center; align-items:center; flex-wrap:wrap;">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/7/7e/Gmail_icon_%282020%29.svg" style="width:26px;"> doupytattoo@gmail.com
+        </div>
+        <a href="https://www.instagram.com/doupy.tattoo/" target="_blank">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" style="width:26px; vertical-align:middle;"> @doupy.tattoo
+        </a>
+        <a href="https://www.tiktok.com/@doupy.tattoo?_r=1&_t=ZN-93BMLApzJZ8" target="_blank">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/a/a6/Tiktok_icon.svg" style="width:26px; vertical-align:middle;"> TikTok
+        </a>
+        <a href="https://www.facebook.com/doupy.tattoo" target="_blank">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Facebook_icon.svg" style="width:26px; vertical-align:middle;"> Facebook
+        </a>
+      </div>
+    </footer>
+
+    <div class="artist-bio" style="max-width:900px; margin:80px auto 0; text-align:center; line-height:1.8; font-size:1.05rem; opacity:0.92;">
+      <p style="font-size:1.25rem; font-weight:600; margin-bottom:20px;">Jmenuji se Petr Doupovec</p>
+      <p>a tetování beru jako osobní otisk příběhu.</p>
+      <p>Věnuji se především minimalistickým motivům – nápisům, symbolům a kresbám s významem. Každé tetování vzniká individuálně, bez šablon a bez spěchu.</p>
+      <p>Vyrostl jsem z kresby a graffiti, což se promítá do čistých linek a ručního stylu, který má duši. Pokud hledáš jednoduché, ale silné tetování s osobním významem, jsi na správném místě.</p>
+    </div>
+
+    <div id="lightbox" class="lightbox" aria-hidden="true">
+      <button class="lb-close" type="button" onclick="closeLightbox()" aria-label="Zavřít">✖</button>
+      <button class="lb-arrow lb-prev" type="button" onclick="event.stopPropagation(); prevImage();" aria-label="Předchozí">❮</button>
+      <div class="lb-inner" onclick="event.stopPropagation();">
+        <div class="lb-counter" id="lbCounter">1 / 1</div>
+        <img id="lightboxImg" class="lb-img" src="" alt="preview">
+      </div>
+      <button class="lb-arrow lb-next" type="button" onclick="event.stopPropagation(); nextImage();" aria-label="Další">❯</button>
+    </div>
+  </div>
+
+  <script>
+    // --- Gallery open/close ---
+    function showGallery() {
+      const g = document.getElementById('gallerySection');
+      g.style.display = 'block';
+      g.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function closeGallery() {
+      const g = document.getElementById('gallerySection');
+      g.style.display = 'none';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // --- Lightbox + swipe ---
+    let galleryImages = [];
+    let currentIndex = 0;
+    let touchStartX = 0;
+    let touchStartY = 0;
+
+    function openLightboxByIndex(index) {
+      if (!galleryImages.length) return;
+      currentIndex = (index + galleryImages.length) % galleryImages.length;
+
+      const lb = document.getElementById('lightbox');
+      const img = document.getElementById('lightboxImg');
+      const counter = document.getElementById('lbCounter');
+
+      // reset animace
+      img.classList.remove('is-active');
+
+      img.src = galleryImages[currentIndex];
+      counter.textContent = `${currentIndex + 1} / ${galleryImages.length}`;
+
+      lb.style.display = 'flex';
+      lb.setAttribute('aria-hidden', 'false');
+
+      // čekni na načtení, pak hezký fade/scale
+      requestAnimationFrame(() => img.classList.add('is-active'));
+    }
+    
+
+    function closeLightbox() {
+      const lb = document.getElementById('lightbox');
+      const img = document.getElementById('lightboxImg');
+      img.classList.remove('is-active');
+      lb.style.display = 'none';
+      lb.setAttribute('aria-hidden', 'true');
+    }
+
+    function nextImage() {
+      openLightboxByIndex(currentIndex + 1);
+    }
+
+    function prevImage() {
+      openLightboxByIndex(currentIndex - 1);
+    }
+
+    // Inicializace: napojí klikání na všechny obrázky v galerii automaticky
+    document.addEventListener('DOMContentLoaded', () => {
+      const imgs = Array.from(document.querySelectorAll('.gallery img'));
+      galleryImages = imgs.map(i => i.getAttribute('src'));
+
+      imgs.forEach((img, idx) => {
+        img.addEventListener('click', (e) => {
+          e.stopPropagation();
+          openLightboxByIndex(idx);
+        });
+      });
+
+      const lb = document.getElementById('lightbox');
+      const lbImg = document.getElementById('lightboxImg');
+      const counter = document.getElementById('lbCounter');
+
+      // Klik mimo obsah = zavřít
+      lb.addEventListener('click', () => closeLightbox());
+
+      // Swipe: začátek
+      lb.addEventListener('touchstart', (e) => {
+        if (!e.touches || e.touches.length !== 1) return;
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+      }, { passive: true });
+
+      // Swipe: konec
+      lb.addEventListener('touchend', (e) => {
+        if (!e.changedTouches || e.changedTouches.length !== 1) return;
+
+        const endX = e.changedTouches[0].clientX;
+        const endY = e.changedTouches[0].clientY;
+
+        const dx = endX - touchStartX;
+        const dy = endY - touchStartY;
+
+        const absX = Math.abs(dx);
+        const absY = Math.abs(dy);
+        const threshold = 45;
+
+        // horizontální swipe = přepínání
+        if (absX > threshold && absX > absY) {
+          if (dx < 0) nextImage();
+          else prevImage();
+          return;
+        }
+
+        // swipe dolů = zavřít
+        if (absY > threshold && absY > absX && dy > 0) {
+          closeLightbox();
+        }
+      }, { passive: true });
+
+      // Klik na obrázek = další fotka (rychlé pro mobil)
+      lbImg.addEventListener('click', (e) => {
+        e.stopPropagation();
+        nextImage();
+      });
+
+      // ESC zavře (na PC)
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeLightbox();
+        if (e.key === 'ArrowRight') nextImage();
+        if (e.key === 'ArrowLeft') prevImage();
+      });
+    });
+  </script>
+</body>
+</html>
