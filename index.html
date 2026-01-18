@@ -5,507 +5,539 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DOUPY Tattoo Artist</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Montserrat', sans-serif;
+    :root{
+      --bg-overlay: rgba(0,0,0,0.60);
+      --panel: rgba(0,0,0,0.62);
+      --panel-2: rgba(0,0,0,0.80);
+      --accent1:#0088ff;
+      --accent2:#33ccff;
+      --text:#ffffff;
+      --muted: rgba(255,255,255,0.88);
+      --shadow: 0 0 22px rgba(0,170,255,0.35);
+      --radius: 18px;
     }
 
-    body {
-      min-height: 100svh;
+    *{ margin:0; padding:0; box-sizing:border-box; }
+    html,body{ height:100%; }
+
+    body{
+      min-height:100svh;
       background: url('background.jpg') no-repeat center center/cover;
-      overflow-x: hidden;
-      overflow-y: auto;
-      color: white;
+      color: var(--text);
+      overflow-x:hidden;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
     }
 
-    .overlay {
-      width: 100%;
-      min-height: 100svh;
-      background: rgba(0, 0, 0, 0.6);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      text-align: center;
-      padding: 56px 16px 24px;
-      gap: 14px;
-      animation: fadeIn 2s ease;
+    /* --- Base layout --- */
+    .overlay{
+      min-height:100svh;
+      background: var(--bg-overlay);
+      padding: 22px 14px 48px;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+    .container{
+      width: min(980px, 100%);
+      margin: 0 auto;
+      display:flex;
+      flex-direction:column;
+      gap: 18px;
+      align-items:center;
+      text-align:center;
     }
 
-    h1 {
-      font-size: 3.5rem;
-      margin-bottom: 15px;
-      text-shadow: 0 0 20px #00aaff;
-      animation: glow 3s infinite alternate;
+    /* --- Hero --- */
+    .hero{
+      width:100%;
+      padding: 26px 16px;
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(0,0,0,0.55), rgba(0,0,0,0.25));
+      box-shadow: 0 10px 50px rgba(0,0,0,0.35);
+      backdrop-filter: blur(6px);
+      animation: fadeUp 700ms ease both;
     }
 
-    @keyframes glow {
-      from { text-shadow: 0 0 15px #0066cc; }
-      to { text-shadow: 0 0 35px #33ccff; }
+    h1{
+      font-size: clamp(2.1rem, 4.8vw, 3.2rem);
+      line-height:1.05;
+      letter-spacing: 0.5px;
+      text-shadow: 0 0 22px rgba(0,170,255,0.45);
     }
 
-    p.subtitle {
-      font-size: 1.3rem;
-      opacity: 0.9;
-      margin-bottom: 35px;
-      animation: fadeIn 3s ease;
+    .subtitle{
+      margin-top: 10px;
+      font-size: clamp(1.02rem, 2.6vw, 1.25rem);
+      color: var(--muted);
     }
 
-    .button {
-      padding: 15px 35px;
-      font-size: 1.3rem;
-      background: linear-gradient(90deg, #0088ff, #33ccff);
-      border: none;
-      border-radius: 50px;
-      cursor: pointer;
-      color: white;
-      box-shadow: 0 0 20px #00aaff;
-      transition: 0.4s ease;
-      animation: buttonPop 2s ease;
-      position: relative;
-      overflow: hidden;
-      z-index: 0;
-    }
-
-    .button::after {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, #33ccff, #66e0ff);
-      transition: 0.4s ease;
-      z-index: -1;
-    }
-
-    .button:hover::after {
-      left: 0;
-    }
-
-    @keyframes buttonPop {
-      0% { transform: scale(0); }
-      100% { transform: scale(1); }
-    }
-
-    .button:hover {
-      transform: scale(1.15);
-      box-shadow: 0 0 35px #33ccff;
-    }
-
-    .gallery-section {
-      margin-top: 80px;
-      padding: 64px 20px 40px;
-      background: rgba(0, 0, 0, 0.7);
-      border-radius: 20px;
-      animation: fadeUp 1.5s ease;
-      position: relative;
-      width: min(1100px, 100%);
-    }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(50px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .gallery {
-      margin-top: 30px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 15px;
-      justify-content: center;
-    }
-
-    .gallery img {
-      width: 240px;
-      height: 240px;
-      object-fit: cover;
-      border-radius: 12px;
-      transition: 0.3s ease;
-      box-shadow: 0 0 12px black;
-      opacity: 0;
-      animation: imageFade 1s ease forwards;
-      cursor: pointer;
-    }
-
-    .gallery img:hover {
-      transform: scale(1.15);
-      box-shadow: 0 0 25px #00aaff;
-    }
-    }
-
-    @keyframes imageFade {
-      from { opacity: 0; transform: scale(0.8); }
-      to { opacity: 1; transform: scale(1); }
-    }
-
-    footer {
-      margin-top: 60px;
-      text-align: center;
-      font-size: 1rem;
-      opacity: 0.85;
-      padding-bottom: 20px;
-    }
-
-    footer a {
-      color: #00aaff;
-      text-decoration: none;
-      font-weight: bold;
-    }
-
-    @media (max-width: 768px) {
-      h1 { font-size: 2.2rem; line-height: 1.1; }
-      p.subtitle { font-size: 1.05rem; }
-      .button { font-size: 1rem; padding: 12px 22px; }
-      .gallery img { width: 155px; height: 155px; }
-      .gallery { gap: 10px; }
-      .lb-arrow { width: 48px; height: 48px; font-size: 22px; }
-      .lb-close { width: 44px; height: 44px; font-size: 20px; }
-      .lb-counter { top: -40px; font-size: 0.9rem; }
-    }
-      p.subtitle { font-size: 1.1rem; }
-      .button { font-size: 1rem; padding: 12px 25px; }
-      .gallery img { width: 150px; height: 150px; }
-    }
-  .btn-text { position: relative; z-index: 1; }
-.button::after { z-index: 1; }
-.lightbox {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.9);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-      animation: fadeIn 0.3s ease;
-      touch-action: pan-y; /* dovolí scroll nahoru/dolů, ale ne horizontální "gesta" prohlížeče */
-    }
-
-    .lightbox img {
-      max-width: 90%;
-      max-height: 90%;
-      border-radius: 15px;
-      box-shadow: 0 0 40px #00aaff;
-    }
-
-
-    /* --- Lightbox UI --- */
-    .lb-inner {
-      position: relative;
-      max-width: 92vw;
-      max-height: 92vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .lb-img {
-      max-width: 92vw;
-      max-height: 82vh;
-      border-radius: 15px;
-      box-shadow: 0 0 40px #00aaff;
-      transform: scale(0.98);
-      opacity: 0;
-      transition: opacity 200ms ease, transform 200ms ease;
-    }
-
-    .lb-img.is-active {
-      opacity: 1;
-      transform: scale(1);
-    }
-
-    .lb-close {
-      position: absolute;
-      top: 16px;
-      right: 18px;
-      width: 46px;
-      height: 46px;
-      border: 0;
+    /* --- CTA button --- */
+    .button{
+      margin-top: 18px;
+      border:0;
       border-radius: 999px;
-      background: rgba(0,0,0,0.5);
-      color: #fff;
-      font-size: 22px;
-      cursor: pointer;
-      z-index: 10000;
-      display: grid;
-      place-items: center;
-      box-shadow: 0 0 18px rgba(0,170,255,0.35);
-      transition: transform 180ms ease, background 180ms ease;
+      padding: 14px 26px;
+      font-size: 1.05rem;
+      color:#fff;
+      cursor:pointer;
+      background: linear-gradient(90deg, var(--accent1), var(--accent2));
+      box-shadow: var(--shadow);
+      position:relative;
+      overflow:hidden;
+      transform: translateZ(0);
+      transition: transform 180ms ease, box-shadow 180ms ease;
     }
 
-    .lb-close:hover { transform: scale(1.08); background: rgba(0,0,0,0.65); }
+    .button .btn-text{ position:relative; z-index:2; }
 
-    .lb-arrow {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 54px;
-      height: 54px;
-      border: 0;
+    .button::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      left:-110%;
+      background: linear-gradient(90deg, #33ccff, #66e0ff);
+      transition: left 280ms ease;
+      z-index:1;
+    }
+
+    .button:hover{ transform: scale(1.05); box-shadow: 0 0 30px rgba(0,170,255,0.55); }
+    .button:hover::after{ left:0; }
+
+    /* --- Socials --- */
+    .socials{
+      width:100%;
+      border-radius: var(--radius);
+      padding: 18px 16px;
+      background: var(--panel);
+      backdrop-filter: blur(6px);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.28);
+      animation: fadeUp 800ms ease both;
+      animation-delay: 60ms;
+    }
+
+    .social-row{
+      display:flex;
+      gap: 14px 18px;
+      justify-content:center;
+      align-items:center;
+      flex-wrap:wrap;
+      margin-top: 10px;
+    }
+
+    .chip{
+      display:flex;
+      align-items:center;
+      gap: 8px;
+      padding: 10px 12px;
       border-radius: 999px;
       background: rgba(0,0,0,0.45);
-      color: #fff;
-      font-size: 26px;
-      cursor: pointer;
-      z-index: 10000;
-      display: grid;
-      place-items: center;
-      box-shadow: 0 0 18px rgba(0,170,255,0.25);
-      transition: transform 180ms ease, background 180ms ease;
-      user-select: none;
+      box-shadow: 0 0 16px rgba(0,170,255,0.10);
     }
 
-    .lb-arrow:hover { transform: translateY(-50%) scale(1.08); background: rgba(0,0,0,0.6); }
-    .lb-prev { left: 14px; }
-    .lb-next { right: 14px; }
+    .chip img{ width: 22px; height: 22px; object-fit:contain; }
 
-    .lb-counter {
-      position: absolute;
-      top: -46px;
+    .chip a{
+      color: var(--accent2);
+      text-decoration:none;
+      font-weight:700;
+    }
+
+    .chip a:hover{ text-decoration: underline; }
+
+    /* --- Bio --- */
+    .bio{
+      width:100%;
+      border-radius: var(--radius);
+      padding: 22px 18px;
+      background: var(--panel);
+      backdrop-filter: blur(6px);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.28);
+      animation: fadeUp 900ms ease both;
+      animation-delay: 120ms;
+    }
+
+    .bio .name{
+      font-size: 1.25rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+      text-shadow: 0 0 14px rgba(0,170,255,0.25);
+    }
+
+    .bio p{
+      font-size: 1.02rem;
+      line-height: 1.75;
+      color: var(--muted);
+      margin-top: 10px;
+    }
+
+    /* --- Footer --- */
+    footer{
+      opacity: 0.85;
+      font-size: 0.95rem;
+      padding-top: 8px;
+    }
+
+    /* --- Gallery modal (fullscreen) --- */
+    .gallery-modal{
+      position: fixed;
+      inset:0;
+      display:none;
+      z-index: 9000;
+      background: rgba(0,0,0,0.92);
+      overflow:auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 76px 14px 40px;
+    }
+
+    .gallery-modal.is-open{ display:block; }
+
+    .gallery-modal .modal-inner{
+      width: min(1100px, 100%);
+      margin: 0 auto;
+    }
+
+    .gallery-title{
+      font-size: 1.35rem;
+      margin-bottom: 14px;
+      text-align:center;
+      text-shadow: 0 0 14px rgba(0,170,255,0.28);
+    }
+
+    .gallery-grid{
+      display:grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .thumb{
+      width:100%;
+      aspect-ratio: 1/1;
+      border-radius: 14px;
+      object-fit: cover;
+      box-shadow: 0 0 18px rgba(0,0,0,0.55);
+      cursor:pointer;
+      transform: translateZ(0);
+      transition: transform 180ms ease, box-shadow 180ms ease;
+    }
+
+    .thumb:hover{ transform: scale(1.03); box-shadow: 0 0 26px rgba(0,170,255,0.28); }
+
+    /* Close button (ALWAYS visible) */
+    .modal-close{
+      position: fixed;
+      top: 14px;
+      right: 14px;
+      width: 48px;
+      height: 48px;
+      border-radius: 999px;
+      border: 0;
+      cursor: pointer;
+      background: rgba(0,0,0,0.70);
+      color: #fff;
+      font-size: 22px;
+      display:grid;
+      place-items:center;
+      box-shadow: 0 0 18px rgba(0,170,255,0.40);
+      z-index: 9100;
+      transition: transform 160ms ease, background 160ms ease;
+    }
+
+    .modal-close:hover{ transform: scale(1.08); background: rgba(0,0,0,0.82); }
+
+    /* --- Lightbox --- */
+    .lightbox{
+      position: fixed;
+      inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      background: rgba(0,0,0,0.92);
+      z-index: 10000;
+      touch-action: pan-y;
+    }
+
+    .lightbox.is-open{ display:flex; }
+
+    .lb-inner{
+      position: relative;
+      width: min(92vw, 980px);
+      height: min(82vh, 720px);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .lb-img{
+      max-width: 100%;
+      max-height: 100%;
+      border-radius: 16px;
+      box-shadow: 0 0 40px rgba(0,170,255,0.40);
+      opacity:0;
+      transform: scale(0.98);
+      transition: opacity 180ms ease, transform 180ms ease;
+    }
+
+    .lb-img.is-active{ opacity:1; transform: scale(1); }
+
+    .lb-counter{
+      position:absolute;
+      top: -44px;
       left: 50%;
       transform: translateX(-50%);
       padding: 8px 12px;
       border-radius: 999px;
-      background: rgba(0,0,0,0.5);
+      background: rgba(0,0,0,0.65);
+      box-shadow: 0 0 18px rgba(0,170,255,0.22);
       font-size: 0.95rem;
-      letter-spacing: 0.5px;
-      box-shadow: 0 0 18px rgba(0,170,255,0.2);
       white-space: nowrap;
     }
 
-    @media (max-width: 768px) {
-      .lb-arrow { width: 48px; height: 48px; font-size: 22px; }
-      .lb-close { width: 44px; height: 44px; font-size: 20px; }
-      .lb-counter { top: -40px; font-size: 0.9rem; }
-    }
-
-    .gallery-close {
-      position: absolute;
-      top: 14px;
-      right: 14px;
-      width: 44px;
-      height: 44px;
+    .lb-btn{
+      position: fixed;
+      border:0;
       border-radius: 999px;
-      display: grid;
-      place-items: center;
-      font-size: 22px;
-      cursor: pointer;
-      background: rgba(0,0,0,0.6);
-      box-shadow: 0 0 18px rgba(0,170,255,0.35);
-      z-index: 999;
-      transition: 0.2s ease;
-      color: #fff;
+      background: rgba(0,0,0,0.65);
+      color:#fff;
+      cursor:pointer;
+      box-shadow: 0 0 18px rgba(0,170,255,0.25);
+      display:grid;
+      place-items:center;
+      transition: transform 160ms ease, background 160ms ease;
+      z-index: 10010;
+      user-select:none;
     }
 
-    .gallery-close:hover { transform: scale(1.15); color:#33ccff; }
-    .gallery-close:hover { transform: scale(1.15); color:#33ccff; }
-</style>
+    .lb-btn:hover{ transform: scale(1.08); background: rgba(0,0,0,0.80); }
+
+    .lb-close{ top: 14px; right: 14px; width:48px; height:48px; font-size: 22px; }
+    .lb-prev{ top: 50%; left: 14px; transform: translateY(-50%); width:54px; height:54px; font-size: 26px; }
+    .lb-next{ top: 50%; right: 14px; transform: translateY(-50%); width:54px; height:54px; font-size: 26px; }
+
+    /* --- Animations --- */
+    @keyframes fadeUp{ from{ opacity:0; transform: translateY(14px);} to{ opacity:1; transform: translateY(0);} }
+
+    /* --- Responsive --- */
+    @media (max-width: 980px){
+      .gallery-grid{ grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 640px){
+      .overlay{ padding: 18px 12px 44px; }
+      .hero{ padding: 22px 14px; }
+      .button{ width: 100%; max-width: 360px; }
+      .gallery-grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .lb-prev,.lb-next{ width:48px; height:48px; font-size:22px; }
+      .lb-close{ width:46px; height:46px; font-size:20px; }
+      .lb-counter{ top:-40px; font-size:0.9rem; }
+    }
+  </style>
 </head>
 <body>
   <div class="overlay">
-    <h1>DOUPY Tattoo Artist</h1>
-    <p class="subtitle">Precizní práce • Originální designy • Profesionální péče</p>
-    <button class="button" onclick="showGallery()"><span class="btn-text">Zobrazit ukázky</span></button>
+    <div class="container">
 
-    <div id="gallerySection" class="gallery-section" style="display:none; position: relative;">
-      <div class="gallery-close" onclick="closeGallery()">✖</div>
-      <h2>Ukázky Tvorby</h2>
-      <div class="gallery">
-        <!-- 15 obrázků - doplníš své -->
-        <img src="sample1.jpg" alt="Tattoo">
-        <img src="sample2.jpg" alt="Tattoo">
-        <img src="sample3.jpg" alt="Tattoo">
-        <img src="sample4.jpg" alt="Tattoo">
-        <img src="sample5.jpg" alt="Tattoo">
-        <img src="sample6.jpg" alt="Tattoo">
-        <img src="sample7.jpg" alt="Tattoo">
-        <img src="sample8.jpg" alt="Tattoo">
-        <img src="sample9.jpg" alt="Tattoo">
-        <img src="sample10.jpg" alt="Tattoo">
-        <img src="sample11.jpg" alt="Tattoo">
-        <img src="sample12.jpg" alt="Tattoo">
-        <img src="sample13.jpg" alt="Tattoo">
-        <img src="sample14.jpg" alt="Tattoo">
-        <img src="sample15.jpg" alt="Tattoo">
-        <img src="sample16.jpg" alt="Tattoo">
-        <img src="sample17.jpg" alt="Tattoo">
-        <img src="sample18.jpg" alt="Tattoo">
-        <img src="sample19.jpg" alt="Tattoo">
-        <img src="sample20.jpg" alt="Tattoo">
-      </div>
-    </div>
+      <section class="hero" aria-label="Úvod">
+        <h1>DOUPY Tattoo Artist</h1>
+        <p class="subtitle">Precizní práce • Originální designy • Profesionální péče</p>
+        <button class="button" type="button" id="openGalleryBtn">
+          <span class="btn-text">Zobrazit ukázky</span>
+        </button>
+      </section>
 
-    <footer>
-      © 2026 DOUPY Tattoo Artist<br>
-      <div style="display:flex; gap:18px; justify-content:center; align-items:center; flex-wrap:wrap;">
-        <div style="display:flex; align-items:center; gap:6px;">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/7/7e/Gmail_icon_%282020%29.svg" style="width:26px;"> doupytattoo@gmail.com
+      <section class="socials" aria-label="Kontakty a sítě">
+        <div>© 2026 DOUPY Tattoo Artist</div>
+        <div class="social-row">
+          <div class="chip" title="E-mail">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/7/7e/Gmail_icon_%282020%29.svg" alt="Gmail" />
+            <span>doupytattoo@gmail.com</span>
+          </div>
+          <div class="chip">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram" />
+            <a href="https://www.instagram.com/doupy.tattoo/" target="_blank" rel="noopener">@doupy.tattoo</a>
+          </div>
+          <div class="chip">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a6/Tiktok_icon.svg" alt="TikTok" />
+            <a href="https://www.tiktok.com/@doupy.tattoo?_r=1&_t=ZN-93BMLApzJZ8" target="_blank" rel="noopener">TikTok</a>
+          </div>
+          <div class="chip">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Facebook_icon.svg" alt="Facebook" />
+            <a href="https://www.facebook.com/doupy.tattoo" target="_blank" rel="noopener">Facebook</a>
+          </div>
         </div>
-        <a href="https://www.instagram.com/doupy.tattoo/" target="_blank">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" style="width:26px; vertical-align:middle;"> @doupy.tattoo
-        </a>
-        <a href="https://www.tiktok.com/@doupy.tattoo?_r=1&_t=ZN-93BMLApzJZ8" target="_blank">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/a/a6/Tiktok_icon.svg" style="width:26px; vertical-align:middle;"> TikTok
-        </a>
-        <a href="https://www.facebook.com/doupy.tattoo" target="_blank">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Facebook_icon.svg" style="width:26px; vertical-align:middle;"> Facebook
-        </a>
-      </div>
-    </footer>
+      </section>
 
-    <div class="artist-bio" style="max-width:900px; margin:80px auto 0; text-align:center; line-height:1.8; font-size:1.05rem; opacity:0.92;">
-      <p style="font-size:1.25rem; font-weight:600; margin-bottom:20px;">Jmenuji se Petr Doupovec</p>
-      <p>a tetování beru jako osobní otisk příběhu.</p>
-      <p>Věnuji se především minimalistickým motivům – nápisům, symbolům a kresbám s významem. Každé tetování vzniká individuálně, bez šablon a bez spěchu.</p>
-      <p>Vyrostl jsem z kresby a graffiti, což se promítá do čistých linek a ručního stylu, který má duši. Pokud hledáš jednoduché, ale silné tetování s osobním významem, jsi na správném místě.</p>
+      <section class="bio" aria-label="O mně">
+        <div class="name">Jmenuji se Petr Doupovec</div>
+        <p>a tetování beru jako osobní otisk příběhu.</p>
+        <p>Věnuji se především minimalistickým motivům – nápisům, symbolům a kresbám s významem. Každé tetování vzniká individuálně, bez šablon a bez spěchu.</p>
+        <p>Vyrostl jsem z kresby a graffiti, což se promítá do čistých linek a ručního stylu, který má duši. Pokud hledáš jednoduché, ale silné tetování s osobním významem, jsi na správném místě.</p>
+      </section>
+
+      <footer>
+        <div style="margin-top:6px;">Made with GitHub Pages</div>
+      </footer>
+
     </div>
+  </div>
 
-    <div id="lightbox" class="lightbox" aria-hidden="true">
-      <button class="lb-close" type="button" onclick="closeLightbox()" aria-label="Zavřít">✖</button>
-      <button class="lb-arrow lb-prev" type="button" onclick="event.stopPropagation(); prevImage();" aria-label="Předchozí">❮</button>
-      <div class="lb-inner" onclick="event.stopPropagation();">
-        <div class="lb-counter" id="lbCounter">1 / 1</div>
-        <img id="lightboxImg" class="lb-img" src="" alt="preview">
-      </div>
-      <button class="lb-arrow lb-next" type="button" onclick="event.stopPropagation(); nextImage();" aria-label="Další">❯</button>
+  <!-- Gallery modal -->
+  <div class="gallery-modal" id="galleryModal" aria-hidden="true">
+    <button class="modal-close" type="button" id="closeGalleryBtn" aria-label="Zavřít">✖</button>
+    <div class="modal-inner">
+      <div class="gallery-title">Ukázky tvorby</div>
+      <div class="gallery-grid" id="galleryGrid"></div>
+    </div>
+  </div>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <button class="lb-btn lb-close" type="button" id="lbClose" aria-label="Zavřít">✖</button>
+    <button class="lb-btn lb-prev" type="button" id="lbPrev" aria-label="Předchozí">❮</button>
+    <button class="lb-btn lb-next" type="button" id="lbNext" aria-label="Další">❯</button>
+
+    <div class="lb-inner" id="lbInner">
+      <div class="lb-counter" id="lbCounter">1 / 1</div>
+      <img class="lb-img" id="lbImg" alt="preview" />
     </div>
   </div>
 
   <script>
-    // --- Gallery open/close ---
-    function showGallery() {
-      const g = document.getElementById('gallerySection');
-      g.style.display = 'block';
-      g.scrollIntoView({ behavior: 'smooth' });
-    }
+    // --- CONFIG: your image filenames ---
+    const IMAGE_COUNT = 20;
+    const images = Array.from({ length: IMAGE_COUNT }, (_, i) => `sample${i + 1}.jpg`);
 
-    function closeGallery() {
-      const g = document.getElementById('gallerySection');
-      g.style.display = 'none';
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+    // --- Elements ---
+    const openGalleryBtn = document.getElementById('openGalleryBtn');
+    const galleryModal = document.getElementById('galleryModal');
+    const closeGalleryBtn = document.getElementById('closeGalleryBtn');
+    const galleryGrid = document.getElementById('galleryGrid');
 
-    // --- Lightbox + swipe ---
-    let galleryImages = [];
+    const lightbox = document.getElementById('lightbox');
+    const lbImg = document.getElementById('lbImg');
+    const lbCounter = document.getElementById('lbCounter');
+    const lbClose = document.getElementById('lbClose');
+    const lbPrev = document.getElementById('lbPrev');
+    const lbNext = document.getElementById('lbNext');
+
     let currentIndex = 0;
     let touchStartX = 0;
     let touchStartY = 0;
 
-    function openLightboxByIndex(index) {
-      if (!galleryImages.length) return;
-      currentIndex = (index + galleryImages.length) % galleryImages.length;
-
-      const lb = document.getElementById('lightbox');
-      const img = document.getElementById('lightboxImg');
-      const counter = document.getElementById('lbCounter');
-
-      // reset animace
-      img.classList.remove('is-active');
-
-      img.src = galleryImages[currentIndex];
-      counter.textContent = `${currentIndex + 1} / ${galleryImages.length}`;
-
-      lb.style.display = 'flex';
-      lb.setAttribute('aria-hidden', 'false');
-
-      // čekni na načtení, pak hezký fade/scale
-      requestAnimationFrame(() => img.classList.add('is-active'));
-    }
-    }
-
-    function closeLightbox() {
-      const lb = document.getElementById('lightbox');
-      const img = document.getElementById('lightboxImg');
-      img.classList.remove('is-active');
-      lb.style.display = 'none';
-      lb.setAttribute('aria-hidden', 'true');
-    }
-
-    function nextImage() {
-      openLightboxByIndex(currentIndex + 1);
-    }
-
-    function prevImage() {
-      openLightboxByIndex(currentIndex - 1);
-    }
-
-    // Inicializace: napojí klikání na všechny obrázky v galerii automaticky
-    document.addEventListener('DOMContentLoaded', () => {
-      const imgs = Array.from(document.querySelectorAll('.gallery img'));
-      galleryImages = imgs.map(i => i.getAttribute('src'));
-
-      imgs.forEach((img, idx) => {
-        img.addEventListener('click', (e) => {
-          e.stopPropagation();
-          openLightboxByIndex(idx);
-        });
+    // --- Render gallery thumbnails ---
+    function renderGallery(){
+      galleryGrid.innerHTML = '';
+      images.forEach((src, idx) => {
+        const img = document.createElement('img');
+        img.className = 'thumb';
+        img.src = src;
+        img.alt = `Tattoo ${idx + 1}`;
+        img.loading = 'lazy';
+        img.addEventListener('click', () => openLightbox(idx));
+        galleryGrid.appendChild(img);
       });
+    }
 
-      const lb = document.getElementById('lightbox');
-      const lbImg = document.getElementById('lightboxImg');
-      const counter = document.getElementById('lbCounter');
+    // --- Modal open/close ---
+    function openGallery(){
+      galleryModal.classList.add('is-open');
+      galleryModal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
 
-      // Klik mimo obsah = zavřít
-      lb.addEventListener('click', () => closeLightbox());
+    function closeGallery(){
+      galleryModal.classList.remove('is-open');
+      galleryModal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = 'auto';
+      closeLightbox();
+    }
 
-      // Swipe: začátek
-      lb.addEventListener('touchstart', (e) => {
-        if (!e.touches || e.touches.length !== 1) return;
-        touchStartX = e.touches[0].clientX;
-        touchStartY = e.touches[0].clientY;
-      }, { passive: true });
+    openGalleryBtn.addEventListener('click', () => openGallery());
+    closeGalleryBtn.addEventListener('click', () => closeGallery());
 
-      // Swipe: konec
-      lb.addEventListener('touchend', (e) => {
-        if (!e.changedTouches || e.changedTouches.length !== 1) return;
-
-        const endX = e.changedTouches[0].clientX;
-        const endY = e.changedTouches[0].clientY;
-
-        const dx = endX - touchStartX;
-        const dy = endY - touchStartY;
-
-        const absX = Math.abs(dx);
-        const absY = Math.abs(dy);
-        const threshold = 45;
-
-        // horizontální swipe = přepínání
-        if (absX > threshold && absX > absY) {
-          if (dx < 0) nextImage();
-          else prevImage();
-          return;
-        }
-
-        // swipe dolů = zavřít
-        if (absY > threshold && absY > absX && dy > 0) {
-          closeLightbox();
-        }
-      }, { passive: true });
-
-      // Klik na obrázek = další fotka (rychlé pro mobil)
-      lbImg.addEventListener('click', (e) => {
-        e.stopPropagation();
-        nextImage();
-      });
-
-      // ESC zavře (na PC)
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeLightbox();
-        if (e.key === 'ArrowRight') nextImage();
-        if (e.key === 'ArrowLeft') prevImage();
-      });
+    // click on backdrop closes gallery
+    galleryModal.addEventListener('click', (e) => {
+      if (e.target === galleryModal) closeGallery();
     });
+
+    // --- Lightbox open/close + navigation ---
+    function updateLightbox(){
+      lbImg.classList.remove('is-active');
+      lbImg.src = images[currentIndex];
+      lbCounter.textContent = `${currentIndex + 1} / ${images.length}`;
+      requestAnimationFrame(() => lbImg.classList.add('is-active'));
+    }
+
+    function openLightbox(index){
+      currentIndex = (index + images.length) % images.length;
+      lightbox.classList.add('is-open');
+      lightbox.setAttribute('aria-hidden', 'false');
+      updateLightbox();
+    }
+
+    function closeLightbox(){
+      lightbox.classList.remove('is-open');
+      lightbox.setAttribute('aria-hidden', 'true');
+    }
+
+    function next(){
+      currentIndex = (currentIndex + 1) % images.length;
+      updateLightbox();
+    }
+
+    function prev(){
+      currentIndex = (currentIndex - 1 + images.length) % images.length;
+      updateLightbox();
+    }
+
+    lbClose.addEventListener('click', (e) => { e.stopPropagation(); closeLightbox(); });
+    lbNext.addEventListener('click', (e) => { e.stopPropagation(); next(); });
+    lbPrev.addEventListener('click', (e) => { e.stopPropagation(); prev(); });
+
+    // click outside image closes
+    lightbox.addEventListener('click', () => closeLightbox());
+
+    // prevent closing when clicking image container
+    document.getElementById('lbInner').addEventListener('click', (e) => e.stopPropagation());
+
+    // swipe
+    lightbox.addEventListener('touchstart', (e) => {
+      if (!e.touches || e.touches.length !== 1) return;
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+
+    lightbox.addEventListener('touchend', (e) => {
+      if (!e.changedTouches || e.changedTouches.length !== 1) return;
+      const endX = e.changedTouches[0].clientX;
+      const endY = e.changedTouches[0].clientY;
+      const dx = endX - touchStartX;
+      const dy = endY - touchStartY;
+      const absX = Math.abs(dx);
+      const absY = Math.abs(dy);
+      const threshold = 45;
+
+      if (absX > threshold && absX > absY){
+        if (dx < 0) next();
+        else prev();
+        return;
+      }
+
+      if (absY > threshold && absY > absX && dy > 0){
+        closeLightbox();
+      }
+    }, { passive: true });
+
+    // keyboard
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        if (lightbox.classList.contains('is-open')) closeLightbox();
+        else if (galleryModal.classList.contains('is-open')) closeGallery();
+      }
+      if (!lightbox.classList.contains('is-open')) return;
+      if (e.key === 'ArrowRight') next();
+      if (e.key === 'ArrowLeft') prev();
+    });
+
+    // init
+    renderGallery();
   </script>
 </body>
 </html>
-
