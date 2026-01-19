@@ -17,6 +17,7 @@
   <meta name="twitter:title" content="DOUPY Tattoo Artist">
   <meta name="twitter:description" content="Minimalistické tetování s osobním významem • Liberec">
   <meta name="twitter:image" content="https://doupyy.github.io/doupy-tattoo/og-image.jpg">
+
   <style>
     :root{
       --bg-overlay: rgba(0,0,0,0.60);
@@ -82,9 +83,18 @@
       color: var(--muted);
     }
 
+    /* --- Buttons row (PC side-by-side, mobile stacked) --- */
+    .hero-buttons{
+      margin-top: 18px;
+      display:flex;
+      gap: 14px;
+      justify-content:center;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+
     /* --- CTA button --- */
     .button{
-      margin-top: 18px;
       border:0;
       border-radius: 999px;
       padding: 14px 26px;
@@ -97,6 +107,7 @@
       overflow:hidden;
       transform: translateZ(0);
       transition: transform 180ms ease, box-shadow 180ms ease;
+      min-width: 210px;
     }
 
     .button .btn-text{ position:relative; z-index:2; }
@@ -113,6 +124,16 @@
 
     .button:hover{ transform: scale(1.05); box-shadow: 0 0 30px rgba(0,170,255,0.55); }
     .button:hover::after{ left:0; }
+
+    /* secondary button for pricing */
+    .button-secondary{
+      background: rgba(0,0,0,0.45);
+      box-shadow: 0 0 18px rgba(0,170,255,0.18);
+      border: 1px solid rgba(51,204,255,0.35);
+    }
+    .button-secondary::after{
+      background: linear-gradient(90deg, rgba(51,204,255,0.25), rgba(102,224,255,0.25));
+    }
 
     /* --- Socials --- */
     .socials{
@@ -199,7 +220,6 @@
       -webkit-overflow-scrolling: touch;
       padding: 76px 14px 40px;
     }
-
     .gallery-modal.is-open{ display:block; }
 
     .gallery-modal .modal-inner{
@@ -254,6 +274,56 @@
     }
 
     .modal-close:hover{ transform: scale(1.08); background: rgba(0,0,0,0.82); }
+
+    /* --- Price modal --- */
+    .price-modal{
+      position: fixed;
+      inset: 0;
+      display: none;
+      z-index: 9050;
+      background: rgba(0,0,0,0.92);
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 76px 14px 40px;
+    }
+    .price-modal.is-open{ display:block; }
+
+    .price-card{
+      width: min(820px, 100%);
+      margin: 0 auto;
+      background: rgba(0,0,0,0.55);
+      border-radius: 18px;
+      padding: 18px 16px;
+      box-shadow: 0 0 26px rgba(0,170,255,0.18);
+      backdrop-filter: blur(6px);
+    }
+
+    .price-title{
+      text-align:center;
+      font-size: 1.35rem;
+      margin-bottom: 12px;
+      text-shadow: 0 0 14px rgba(0,170,255,0.28);
+    }
+
+    .price-list{ display:flex; flex-direction:column; gap:10px; }
+
+    .price-item{
+      display:flex;
+      justify-content:space-between;
+      gap: 12px;
+      padding:12px;
+      border-radius:14px;
+      background: rgba(0,0,0,0.45);
+    }
+
+    .price-item span:last-child{ font-weight:800; color:#33ccff; }
+
+    .price-note{
+      margin-top:12px;
+      font-size:0.98rem;
+      line-height:1.6;
+      color:rgba(255,255,255,0.85);
+    }
 
     /* --- Lightbox --- */
     .lightbox{
@@ -335,7 +405,8 @@
     @media (max-width: 640px){
       .overlay{ padding: 18px 12px 44px; }
       .hero{ padding: 22px 14px; }
-      .button{ width: 100%; max-width: 360px; }
+      .hero-buttons{ flex-direction: column; }
+      .button{ width: 100%; max-width: 360px; min-width: 0; }
       .gallery-grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .lb-prev,.lb-next{ width:48px; height:48px; font-size:22px; }
       .lb-close{ width:46px; height:46px; font-size:20px; }
@@ -343,6 +414,7 @@
     }
   </style>
 </head>
+
 <body>
   <div class="overlay">
     <div class="container">
@@ -350,9 +422,16 @@
       <section class="hero" aria-label="Úvod">
         <h1>DOUPY Tattoo Artist</h1>
         <p class="subtitle">Precizní práce • Originální designy • Profesionální péče</p>
-        <button class="button" type="button" id="openGalleryBtn">
-          <span class="btn-text">Zobrazit ukázky</span>
-        </button>
+
+        <div class="hero-buttons">
+          <button class="button" type="button" id="openGalleryBtn">
+            <span class="btn-text">Zobrazit ukázky</span>
+          </button>
+
+          <button class="button button-secondary" type="button" id="openPriceBtn">
+            <span class="btn-text">Ceník</span>
+          </button>
+        </div>
       </section>
 
       <section class="socials" aria-label="Kontakty a sítě">
@@ -380,7 +459,7 @@
       <section class="bio" aria-label="O mně">
         <div class="name">Jmenuji se Petr Doupovec</div>
         <p>a tetování beru jako osobní otisk příběhu.</p>
-        <p>Věnuji se především minimalistickým motivům – nápisům, symbolům a kresbám s významem. Každé tetování vzniká individuálně, bez šablon a bez spěchu.</p>
+        <p>Věnuji se především minimalistickým motivům – nápisům, symbolům a kresbám s významem. Každé tetování vzniká individuálně a bez spěchu.</p>
         <p>Vyrostl jsem z kresby a graffiti, což se promítá do čistých linek a ručního stylu, který má duši. Pokud hledáš jednoduché, ale silné tetování s osobním významem, jsi na správném místě.</p>
       </section>
 
@@ -397,6 +476,26 @@
     <div class="modal-inner">
       <div class="gallery-title">Ukázky tvorby</div>
       <div class="gallery-grid" id="galleryGrid"></div>
+    </div>
+  </div>
+
+  <!-- Price modal -->
+  <div class="price-modal" id="priceModal" aria-hidden="true">
+    <button class="modal-close" type="button" id="closePriceBtn" aria-label="Zavřít">✖</button>
+
+    <div class="price-card">
+      <div class="price-title">Ceník</div>
+
+      <div class="price-list">
+        <div class="price-item"><span>Minimální cena</span><span>600 Kč</span></div>
+        <div class="price-item"><span>Malý motiv</span><span>1&nbsp;200 Kč</span></div>
+        <div class="price-item"><span>Nápis / symbol</span><span>1&nbsp;000 Kč</span></div>
+      </div>
+
+      <div class="price-note">
+        Ceny jsou orientační – finální cena záleží na velikosti, umístění a složitosti návrhu.
+        Napiš mi na IG a pošlu ti přesnou kalkulaci.
+      </div>
     </div>
   </div>
 
@@ -419,9 +518,14 @@
 
     // --- Elements ---
     const openGalleryBtn = document.getElementById('openGalleryBtn');
+    const openPriceBtn = document.getElementById('openPriceBtn');
+
     const galleryModal = document.getElementById('galleryModal');
     const closeGalleryBtn = document.getElementById('closeGalleryBtn');
     const galleryGrid = document.getElementById('galleryGrid');
+
+    const priceModal = document.getElementById('priceModal');
+    const closePriceBtn = document.getElementById('closePriceBtn');
 
     const lightbox = document.getElementById('lightbox');
     const lbImg = document.getElementById('lbImg');
@@ -448,7 +552,7 @@
       });
     }
 
-    // --- Modal open/close ---
+    // --- Modal open/close (Gallery) ---
     function openGallery(){
       galleryModal.classList.add('is-open');
       galleryModal.setAttribute('aria-hidden', 'false');
@@ -462,12 +566,33 @@
       closeLightbox();
     }
 
-    openGalleryBtn.addEventListener('click', () => openGallery());
-    closeGalleryBtn.addEventListener('click', () => closeGallery());
+    openGalleryBtn.addEventListener('click', openGallery);
+    closeGalleryBtn.addEventListener('click', closeGallery);
 
     // click on backdrop closes gallery
     galleryModal.addEventListener('click', (e) => {
       if (e.target === galleryModal) closeGallery();
+    });
+
+    // --- Modal open/close (Price) ---
+    function openPrice(){
+      priceModal.classList.add('is-open');
+      priceModal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closePrice(){
+      priceModal.classList.remove('is-open');
+      priceModal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = 'auto';
+    }
+
+    openPriceBtn.addEventListener('click', openPrice);
+    closePriceBtn.addEventListener('click', closePrice);
+
+    // click on backdrop closes price modal
+    priceModal.addEventListener('click', (e) => {
+      if (e.target === priceModal) closePrice();
     });
 
     // --- Lightbox open/close + navigation ---
@@ -543,6 +668,7 @@
       if (e.key === 'Escape') {
         if (lightbox.classList.contains('is-open')) closeLightbox();
         else if (galleryModal.classList.contains('is-open')) closeGallery();
+        else if (priceModal.classList.contains('is-open')) closePrice();
       }
       if (!lightbox.classList.contains('is-open')) return;
       if (e.key === 'ArrowRight') next();
