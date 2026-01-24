@@ -22,7 +22,6 @@
     :root{
       --bg-overlay: rgba(0,0,0,0.60);
       --panel: rgba(0,0,0,0.62);
-      --panel-2: rgba(0,0,0,0.80);
       --accent1:#0088ff;
       --accent2:#33ccff;
       --text:#ffffff;
@@ -42,7 +41,6 @@
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
     }
 
-    /* --- Base layout --- */
     .overlay{
       min-height:100svh;
       background: var(--bg-overlay);
@@ -59,7 +57,6 @@
       text-align:center;
     }
 
-    /* --- Hero --- */
     .hero{
       width:100%;
       padding: 26px 16px;
@@ -83,7 +80,6 @@
       color: var(--muted);
     }
 
-    /* --- Buttons row (PC side-by-side, mobile stacked) --- */
     .hero-buttons{
       margin-top: 18px;
       display:flex;
@@ -93,7 +89,6 @@
       flex-wrap:wrap;
     }
 
-    /* --- CTA button --- */
     .button{
       border:0;
       border-radius: 999px;
@@ -125,7 +120,6 @@
     .button:hover{ transform: scale(1.05); box-shadow: 0 0 30px rgba(0,170,255,0.55); }
     .button:hover::after{ left:0; }
 
-    /* secondary button for pricing */
     .button-secondary{
       background: rgba(0,0,0,0.45);
       box-shadow: 0 0 18px rgba(0,170,255,0.18);
@@ -135,7 +129,6 @@
       background: linear-gradient(90deg, rgba(51,204,255,0.25), rgba(102,224,255,0.25));
     }
 
-    /* --- Socials --- */
     .socials{
       width:100%;
       border-radius: var(--radius);
@@ -176,7 +169,6 @@
 
     .chip a:hover{ text-decoration: underline; }
 
-    /* --- Bio --- */
     .bio{
       width:100%;
       border-radius: var(--radius);
@@ -202,11 +194,49 @@
       margin-top: 10px;
     }
 
-    /* --- Footer --- */
     footer{
       opacity: 0.85;
       font-size: 0.95rem;
       padding-top: 8px;
+    }
+
+    /* --- Year picker modal --- */
+    .year-modal{
+      position: fixed;
+      inset: 0;
+      display: none;
+      z-index: 8800;
+      background: rgba(0,0,0,0.92);
+      padding: 76px 14px 40px;
+      overflow:auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .year-modal.is-open{ display:block; }
+
+    .year-card{
+      width: min(720px, 100%);
+      margin: 0 auto;
+      background: rgba(0,0,0,0.55);
+      border-radius: 18px;
+      padding: 18px 16px;
+      box-shadow: 0 0 26px rgba(0,170,255,0.18);
+      backdrop-filter: blur(6px);
+      text-align:center;
+    }
+
+    .year-title{
+      font-size: 1.35rem;
+      margin-bottom: 12px;
+      text-shadow: 0 0 14px rgba(0,170,255,0.28);
+    }
+
+    .year-buttons{
+      display:flex;
+      gap: 12px;
+      justify-content:center;
+      flex-wrap:wrap;
+      margin-top: 10px;
     }
 
     /* --- Gallery modal (fullscreen) --- */
@@ -274,6 +304,28 @@
     }
 
     .modal-close:hover{ transform: scale(1.08); background: rgba(0,0,0,0.82); }
+
+    /* NEW: Back button in gallery */
+    .modal-back{
+      position: fixed;
+      top: 14px;
+      left: 14px;
+      width: 48px;
+      height: 48px;
+      border-radius: 999px;
+      border: 0;
+      cursor: pointer;
+      background: rgba(0,0,0,0.70);
+      color: #fff;
+      font-size: 24px;
+      display:grid;
+      place-items:center;
+      box-shadow: 0 0 18px rgba(0,170,255,0.40);
+      z-index: 9100;
+      transition: transform 160ms ease, background 160ms ease;
+    }
+
+    .modal-back:hover{ transform: scale(1.08); background: rgba(0,0,0,0.82); }
 
     /* --- Price modal --- */
     .price-modal{
@@ -394,10 +446,8 @@
     .lb-prev{ top: 50%; left: 14px; transform: translateY(-50%); width:54px; height:54px; font-size: 26px; }
     .lb-next{ top: 50%; right: 14px; transform: translateY(-50%); width:54px; height:54px; font-size: 26px; }
 
-    /* --- Animations --- */
     @keyframes fadeUp{ from{ opacity:0; transform: translateY(14px);} to{ opacity:1; transform: translateY(0);} }
 
-    /* --- Responsive --- */
     @media (max-width: 980px){
       .gallery-grid{ grid-template-columns: repeat(3, minmax(0, 1fr)); }
     }
@@ -411,6 +461,8 @@
       .lb-prev,.lb-next{ width:48px; height:48px; font-size:22px; }
       .lb-close{ width:46px; height:46px; font-size:20px; }
       .lb-counter{ top:-40px; font-size:0.9rem; }
+      .year-buttons{ flex-direction: column; }
+      .year-buttons .button{ width: 100%; max-width: 360px; }
     }
   </style>
 </head>
@@ -470,11 +522,26 @@
     </div>
   </div>
 
+  <!-- Year picker modal -->
+  <div class="year-modal" id="yearModal" aria-hidden="true">
+    <button class="modal-close" type="button" id="closeYearBtn" aria-label="Zavřít">✖</button>
+    <div class="year-card">
+      <div class="year-title">Vyber rok ukázek</div>
+      <div class="year-buttons">
+        <button class="button" type="button" data-year="2025"><span class="btn-text">2025</span></button>
+        <button class="button" type="button" data-year="2026"><span class="btn-text">2026</span></button>
+      </div>
+    </div>
+  </div>
+
   <!-- Gallery modal -->
   <div class="gallery-modal" id="galleryModal" aria-hidden="true">
+    <!-- NEW: Back arrow -->
+    <button class="modal-back" type="button" id="backToYearsBtn" aria-label="Zpět">←</button>
+
     <button class="modal-close" type="button" id="closeGalleryBtn" aria-label="Zavřít">✖</button>
     <div class="modal-inner">
-      <div class="gallery-title">Ukázky tvorby</div>
+      <div class="gallery-title" id="galleryTitle">Ukázky tvorby</div>
       <div class="gallery-grid" id="galleryGrid"></div>
     </div>
   </div>
@@ -512,17 +579,32 @@
   </div>
 
   <script>
-    // --- CONFIG: your image filenames ---
-    const IMAGE_COUNT = 20;
-    const images = Array.from({ length: IMAGE_COUNT }, (_, i) => `sample${i + 1}.jpg`);
+    // Nastavení počtu fotek pro každý rok:
+    const IMAGE_SETS = {
+      "2025": { count: 20, folder: "2025" },
+      "2026": { count: 4, folder: "2026" }
+    };
 
-    // --- Elements ---
+    let selectedYear = "2026";
+    let images = [];
+
+    function buildImagesForYear(year){
+      const cfg = IMAGE_SETS[year];
+      if (!cfg) return [];
+      return Array.from({ length: cfg.count }, (_, i) => `${cfg.folder}/${i + 1}.jpg`);
+    }
+
     const openGalleryBtn = document.getElementById('openGalleryBtn');
     const openPriceBtn = document.getElementById('openPriceBtn');
 
+    const yearModal = document.getElementById('yearModal');
+    const closeYearBtn = document.getElementById('closeYearBtn');
+
     const galleryModal = document.getElementById('galleryModal');
     const closeGalleryBtn = document.getElementById('closeGalleryBtn');
+    const backToYearsBtn = document.getElementById('backToYearsBtn');
     const galleryGrid = document.getElementById('galleryGrid');
+    const galleryTitle = document.getElementById('galleryTitle');
 
     const priceModal = document.getElementById('priceModal');
     const closePriceBtn = document.getElementById('closePriceBtn');
@@ -538,7 +620,6 @@
     let touchStartX = 0;
     let touchStartY = 0;
 
-    // --- Render gallery thumbnails ---
     function renderGallery(){
       galleryGrid.innerHTML = '';
       images.forEach((src, idx) => {
@@ -552,50 +633,56 @@
       });
     }
 
-    // --- Modal open/close (Gallery) ---
+    function lockScroll(){
+      document.body.style.overflow = 'hidden';
+    }
+    function unlockScroll(){
+      document.body.style.overflow = 'auto';
+    }
+
+    function openYearPicker(){
+      yearModal.classList.add('is-open');
+      yearModal.setAttribute('aria-hidden', 'false');
+      lockScroll();
+    }
+
+    function closeYearPicker(){
+      yearModal.classList.remove('is-open');
+      yearModal.setAttribute('aria-hidden', 'true');
+      unlockScroll();
+    }
+
     function openGallery(){
       galleryModal.classList.add('is-open');
       galleryModal.setAttribute('aria-hidden', 'false');
-      document.body.style.overflow = 'hidden';
+      lockScroll();
     }
 
     function closeGallery(){
       galleryModal.classList.remove('is-open');
       galleryModal.setAttribute('aria-hidden', 'true');
-      document.body.style.overflow = 'auto';
+      unlockScroll();
       closeLightbox();
     }
 
-    openGalleryBtn.addEventListener('click', openGallery);
-    closeGalleryBtn.addEventListener('click', closeGallery);
-
-    // click on backdrop closes gallery
-    galleryModal.addEventListener('click', (e) => {
-      if (e.target === galleryModal) closeGallery();
-    });
-
-    // --- Modal open/close (Price) ---
     function openPrice(){
       priceModal.classList.add('is-open');
       priceModal.setAttribute('aria-hidden', 'false');
-      document.body.style.overflow = 'hidden';
+      lockScroll();
     }
 
     function closePrice(){
       priceModal.classList.remove('is-open');
       priceModal.setAttribute('aria-hidden', 'true');
-      document.body.style.overflow = 'auto';
+      unlockScroll();
     }
 
-    openPriceBtn.addEventListener('click', openPrice);
-    closePriceBtn.addEventListener('click', closePrice);
+    function backToYearPicker(){
+      closeLightbox();
+      closeGallery();
+      openYearPicker();
+    }
 
-    // click on backdrop closes price modal
-    priceModal.addEventListener('click', (e) => {
-      if (e.target === priceModal) closePrice();
-    });
-
-    // --- Lightbox open/close + navigation ---
     function updateLightbox(){
       lbImg.classList.remove('is-active');
       lbImg.src = images[currentIndex];
@@ -625,17 +712,39 @@
       updateLightbox();
     }
 
+    // --- Events ---
+    openGalleryBtn.addEventListener('click', openYearPicker);
+
+    closeYearBtn.addEventListener('click', closeYearPicker);
+    yearModal.addEventListener('click', (e) => { if (e.target === yearModal) closeYearPicker(); });
+
+    yearModal.querySelectorAll('[data-year]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        selectedYear = btn.getAttribute('data-year');
+        images = buildImagesForYear(selectedYear);
+        renderGallery();
+        galleryTitle.textContent = `Ukázky tvorby – ${selectedYear}`;
+        closeYearPicker();
+        openGallery();
+      });
+    });
+
+    backToYearsBtn.addEventListener('click', backToYearPicker);
+
+    closeGalleryBtn.addEventListener('click', closeGallery);
+    galleryModal.addEventListener('click', (e) => { if (e.target === galleryModal) closeGallery(); });
+
+    openPriceBtn.addEventListener('click', openPrice);
+    closePriceBtn.addEventListener('click', closePrice);
+    priceModal.addEventListener('click', (e) => { if (e.target === priceModal) closePrice(); });
+
     lbClose.addEventListener('click', (e) => { e.stopPropagation(); closeLightbox(); });
     lbNext.addEventListener('click', (e) => { e.stopPropagation(); next(); });
     lbPrev.addEventListener('click', (e) => { e.stopPropagation(); prev(); });
 
-    // click outside image closes
     lightbox.addEventListener('click', () => closeLightbox());
-
-    // prevent closing when clicking image container
     document.getElementById('lbInner').addEventListener('click', (e) => e.stopPropagation());
 
-    // swipe
     lightbox.addEventListener('touchstart', (e) => {
       if (!e.touches || e.touches.length !== 1) return;
       touchStartX = e.touches[0].clientX;
@@ -663,12 +772,12 @@
       }
     }, { passive: true });
 
-    // keyboard
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         if (lightbox.classList.contains('is-open')) closeLightbox();
-        else if (galleryModal.classList.contains('is-open')) closeGallery();
+        else if (galleryModal.classList.contains('is-open')) backToYearPicker();
         else if (priceModal.classList.contains('is-open')) closePrice();
+        else if (yearModal.classList.contains('is-open')) closeYearPicker();
       }
       if (!lightbox.classList.contains('is-open')) return;
       if (e.key === 'ArrowRight') next();
@@ -676,6 +785,8 @@
     });
 
     // init
+    images = buildImagesForYear(selectedYear);
+    galleryTitle.textContent = `Ukázky tvorby – ${selectedYear}`;
     renderGallery();
   </script>
 </body>
