@@ -271,6 +271,14 @@
       box-shadow: 0 0 12px rgba(51, 204, 255, 0.4);
     }
 
+    .form-note {
+      font-size: 0.88rem;
+      color: var(--muted);
+      margin-top: 4px;
+      text-align: center;
+      line-height: 1.5;
+    }
+
     .form-result {
       margin-top: 10px;
       text-align: center;
@@ -586,8 +594,8 @@
         </div>
 
         <div class="form-group">
-          <label for="phone">Telefon / Instagram handle</label>
-          <input type="text" id="phone" name="phone_or_ig" placeholder="+420 123 456 789 nebo @vaš_ig" class="form-input">
+          <label for="phone">Telefonní číslo *</label>
+          <input type="tel" id="phone" name="phone" required placeholder="+420 123 456 789" class="form-input">
         </div>
 
         <div class="form-group">
@@ -600,7 +608,11 @@
           <textarea id="message" name="message" rows="4" required placeholder="Co bys chtěl/a vytetovat, přibližná velikost v cm a místo na těle..." class="form-input"></textarea>
         </div>
 
-        <button class="button" type="submit" id="submitBookingBtn" style="width: 100%; margin-top: 10px;">
+        <p class="form-note">
+          Zadaný termín je orientační. Jakmile zkontroluji motiv a časovou náročnost, ozvu se ti na telefonní číslo s potvrzením nebo návrhem alternativních termínů.
+        </p>
+
+        <button class="button" type="submit" id="submitBookingBtn" style="width: 100%; margin-top: 6px;">
           <span class="btn-text" id="submitBtnText">Odeslat rezervaci</span>
         </button>
 
