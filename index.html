@@ -194,6 +194,71 @@
       margin-top: 10px;
     }
 
+    /* --- Contact Form Styles --- */
+    .contact-section {
+      width: 100%;
+      border-radius: var(--radius);
+      padding: 26px 20px;
+      background: var(--panel);
+      backdrop-filter: blur(6px);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.28);
+      animation: fadeUp 1000ms ease both;
+      animation-delay: 180ms;
+      text-align: left;
+    }
+
+    .contact-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      margin-bottom: 16px;
+      text-align: center;
+      text-shadow: 0 0 14px rgba(0,170,255,0.25);
+    }
+
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      text-align: left;
+    }
+
+    .form-group label {
+      font-size: 0.95rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 1px solid rgba(51,204,255,0.35);
+      background: rgba(0,0,0,0.45);
+      color: #fff;
+      font-family: inherit;
+      font-size: 1rem;
+      transition: border-color 180ms ease, box-shadow 180ms ease;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--accent2);
+      box-shadow: 0 0 14px rgba(0,170,255,0.4);
+    }
+
+    textarea.form-control {
+      resize: vertical;
+      min-height: 110px;
+    }
+
     footer{
       opacity: 0.85;
       font-size: 0.95rem;
@@ -513,6 +578,37 @@
         <p>a tetování beru jako osobní otisk příběhu.</p>
         <p>Věnuji se především minimalistickým motivům – nápisům, symbolům a kresbám s významem. Každé tetování vzniká individuálně a bez spěchu.</p>
         <p>Vyrostl jsem z kresby a graffiti, což se promítá do čistých linek a ručního stylu, který má duši. Pokud hledáš jednoduché, ale silné tetování s osobním významem, jsi na správném místě.</p>
+      </section>
+
+      <!-- Kontaktní formulář (Web3Forms) -->
+      <section class="contact-section" aria-label="Napiš mi">
+        <div class="contact-title">Poptávka tetování / Napiš mi</div>
+        <form class="contact-form" action="https://api.web3forms.com/submit" method="POST">
+          <!-- Web3Forms Access Key -->
+          <input type="hidden" name="access_key" value="d15fb3df-b3ff-43f2-a285-6cda06f027ef">
+          <input type="hidden" name="subject" value="Nová poptávka tetování z webu">
+
+          <div class="form-group">
+            <label for="name">Jméno a příjmení</label>
+            <input type="text" id="name" name="name" class="form-control" placeholder="Tvé jméno" required>
+          </div>
+
+          <div class="form-group">
+            <label for="email">E-mail</label>
+            <input type="email" id="email" name="email" class="form-control" placeholder="tvojename@email.cz" required>
+          </div>
+
+          <div class="form-group">
+            <label for="message">Představa o tetování (motiv, velikost, umístění)</label>
+            <textarea id="message" name="message" class="form-control" placeholder="Popiš svou představu, přibližnou velikost v cm a místo na těle..." required></textarea>
+          </div>
+
+          <div style="text-align:center; margin-top: 8px;">
+            <button class="button" type="submit">
+              <span class="btn-text">Odeslat poptávku</span>
+            </button>
+          </div>
+        </form>
       </section>
 
       <footer>
